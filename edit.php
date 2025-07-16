@@ -51,10 +51,20 @@ function handleCreate($memory) {
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
         $uploadResult = uploadImage($_FILES['photo']);
         if (!$uploadResult['success']) {
-            setFlashMessage('error', 'Erro no upload: ' . $uploadResult['message']);
+            setFlashMessage('error', 'Erro no upload da imagem: ' . $uploadResult['message']);
             redirect('edit.php');
         }
         $data['photo'] = $uploadResult['filename'];
+    }
+    
+    // Processar upload de vídeo
+    if (isset($_FILES['video']) && $_FILES['video']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $uploadResult = uploadVideo($_FILES['video']);
+        if (!$uploadResult['success']) {
+            setFlashMessage('error', 'Erro no upload do vídeo: ' . $uploadResult['message']);
+            redirect('edit.php');
+        }
+        $data['video'] = $uploadResult['filename'];
     }
     
     // Criar memória
@@ -91,20 +101,37 @@ function handleUpdate($memory) {
         redirect('edit.php');
     }
     
+    // Obter memória atual para deletar arquivos antigos se necessário
+    $currentMemory = $memory->getById($id);
+    
     // Processar upload de imagem
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
-        // Obter memória atual para deletar foto antiga
-        $currentMemory = $memory->getById($id);
+        // Deletar foto antiga se existir
         if ($currentMemory['success'] && $currentMemory['data']['photo']) {
             deleteImage($currentMemory['data']['photo']);
         }
         
         $uploadResult = uploadImage($_FILES['photo']);
         if (!$uploadResult['success']) {
-            setFlashMessage('error', 'Erro no upload: ' . $uploadResult['message']);
+            setFlashMessage('error', 'Erro no upload da imagem: ' . $uploadResult['message']);
             redirect('edit.php');
         }
         $data['photo'] = $uploadResult['filename'];
+    }
+    
+    // Processar upload de vídeo
+    if (isset($_FILES['video']) && $_FILES['video']['error'] !== UPLOAD_ERR_NO_FILE) {
+        // Deletar vídeo antigo se existir
+        if ($currentMemory['success'] && $currentMemory['data']['video']) {
+            deleteVideo($currentMemory['data']['video']);
+        }
+        
+        $uploadResult = uploadVideo($_FILES['video']);
+        if (!$uploadResult['success']) {
+            setFlashMessage('error', 'Erro no upload do vídeo: ' . $uploadResult['message']);
+            redirect('edit.php');
+        }
+        $data['video'] = $uploadResult['filename'];
     }
     
     // Atualizar memória
@@ -395,6 +422,24 @@ $csrfToken = generateCSRFToken();
             margin: 10px 0;
         }
 
+        .memory-video {
+            width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .media-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .media-item {
+            flex: 1;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -498,6 +543,18 @@ $csrfToken = generateCSRFToken();
             margin-top: 30px;
         }
 
+        .media-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .media-grid .memory-photo,
+        .media-grid .memory-video {
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
             .memories-grid {
                 grid-template-columns: 1fr;
@@ -505,6 +562,10 @@ $csrfToken = generateCSRFToken();
             
             .actions-bar {
                 flex-direction: column;
+            }
+
+            .media-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -518,7 +579,7 @@ $csrfToken = generateCSRFToken();
 
         <div class="header">
             <h1>Gerenciar Memórias ✏️</h1>
-            <p>Adicione, edite e organize suas memórias de amor</p>
+            <p>Adicione, edite e organize suas memórias de amor com fotos e vídeos</p>
         </div>
 
         <?php if ($flashMessage): ?>
@@ -562,11 +623,24 @@ $csrfToken = generateCSRFToken();
                             </div>
                         <?php endif; ?>
                         
-                        <?php if (!empty($mem['photo'])): ?>
-                            <img src="<?php echo UPLOAD_DIR . htmlspecialchars($mem['photo']); ?>" 
-                                 alt="<?php echo htmlspecialchars($mem['title']); ?>" 
-                                 class="memory-photo"
-                                 onerror="this.style.display='none'">
+                        <?php if (!empty($mem['photo']) || !empty($mem['video'])): ?>
+                            <div class="media-grid">
+                                <?php if (!empty($mem['photo'])): ?>
+                                    <img src="<?php echo UPLOAD_DIR . htmlspecialchars($mem['photo']); ?>" 
+                                         alt="<?php echo htmlspecialchars($mem['title']); ?>" 
+                                         class="memory-photo"
+                                         onerror="this.style.display='none'">
+                                <?php endif; ?>
+                                
+                                <?php if (!empty($mem['video'])): ?>
+                                    <video controls class="memory-video">
+                                        <source src="<?php echo UPLOAD_DIR . htmlspecialchars($mem['video']); ?>" type="video/mp4">
+                                        <source src="<?php echo UPLOAD_DIR . htmlspecialchars($mem['video']); ?>" type="video/webm">
+                                        <source src="<?php echo UPLOAD_DIR . htmlspecialchars($mem['video']); ?>" type="video/ogg">
+                                        Seu navegador não suporta o elemento de vídeo.
+                                    </video>
+                                <?php endif; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -600,7 +674,7 @@ $csrfToken = generateCSRFToken();
                 
                 <div class="form-group">
                     <label for="verse">Versículo Bíblico:</label>
-                    <input type="text" id="verse" name="verse" placeholder="Ex: João 3:16 - Porque Deus amou o mundo...">
+                    <input type="text" id="verse" name="verse" placeholder="Ex: Porque Deus amou o mundo...">
                 </div>
                 
                 <div class="form-group">
@@ -613,6 +687,14 @@ $csrfToken = generateCSRFToken();
                     <input type="file" id="photo" name="photo" accept="image/*">
                     <small style="color: #666; margin-top: 5px; display: block;">
                         Formatos aceitos: JPG, PNG, GIF, WEBP (máx 5MB)
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="video">Vídeo:</label>
+                    <input type="file" id="video" name="video" accept="video/*">
+                    <small style="color: #666; margin-top: 5px; display: block;">
+                        Formatos aceitos: MP4, WEBM, OGG, AVI, MOV (máx 50MB)
                     </small>
                 </div>
                 

@@ -9,6 +9,10 @@ $memory = new Memory();
 $result = $memory->getAll();
 $memories = $result['success'] ? $result['data'] : [];
 
+// Obter estatísticas
+$statsResult = $memory->getStatistics();
+$stats = $statsResult['success'] ? $statsResult['data'] : [];
+
 // Obter mensagem flash
 $flashMessage = getFlashMessage();
 ?>
@@ -159,6 +163,7 @@ $flashMessage = getFlashMessage();
             justify-content: center;
             gap: 30px;
             margin-bottom: 40px;
+            flex-wrap: wrap;
         }
 
         .stat-card {
@@ -168,6 +173,7 @@ $flashMessage = getFlashMessage();
             text-align: center;
             color: white;
             backdrop-filter: blur(10px);
+            min-width: 120px;
         }
 
         .stat-number {
@@ -291,16 +297,44 @@ $flashMessage = getFlashMessage();
             text-align: right;
         }
 
+        .media-container {
+            margin: 15px 0;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
         .memory-photo {
             width: 100%;
             max-height: 300px;
             object-fit: cover;
             border-radius: 10px;
-            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .memory-photo:hover {
+            transform: scale(1.02);
+        }
+
+        .memory-video {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .photo-placeholder {
+        .memory-video:focus {
+            outline: 2px solid #ffd700;
+            outline-offset: 2px;
+        }
+
+        .media-placeholder {
             width: 100%;
             height: 200px;
             background: linear-gradient(45deg, #f8f9fa, #e9ecef);
@@ -312,6 +346,17 @@ $flashMessage = getFlashMessage();
             color: #6c757d;
             font-style: italic;
             margin: 15px 0;
+        }
+
+        .media-type-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ffd700, #ff6b35);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
         .empty-state {
@@ -392,6 +437,45 @@ $flashMessage = getFlashMessage();
             animation: float 4s ease-in-out infinite;
         }
 
+        /* Modal para visualizar imagens */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .image-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        .image-modal-close:hover {
+            opacity: 0.7;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -456,6 +540,10 @@ $flashMessage = getFlashMessage();
                 flex-direction: column;
                 align-items: center;
             }
+
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -483,15 +571,19 @@ $flashMessage = getFlashMessage();
 
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-number"><?php echo count($memories); ?></div>
+                <div class="stat-number"><?php echo $stats['total_memories'] ?? count($memories); ?></div>
                 <div class="stat-label">Memórias</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number"><?php echo count(array_filter($memories, fn($m) => !empty($m['photo']))); ?></div>
+                <div class="stat-number"><?php echo $stats['memories_with_photos'] ?? count(array_filter($memories, fn($m) => !empty($m['photo']))); ?></div>
                 <div class="stat-label">Fotos</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number"><?php echo count(array_filter($memories, fn($m) => !empty($m['verse']))); ?></div>
+                <div class="stat-number"><?php echo $stats['memories_with_videos'] ?? count(array_filter($memories, fn($m) => !empty($m['video']))); ?></div>
+                <div class="stat-label">Vídeos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo $stats['memories_with_verses'] ?? count(array_filter($memories, fn($m) => !empty($m['verse']))); ?></div>
                 <div class="stat-label">Versículos</div>
             </div>
         </div>
@@ -518,11 +610,33 @@ $flashMessage = getFlashMessage();
                                 </div>
                             <?php endif; ?>
                             
-                            <?php if (!empty($memory['photo'])): ?>
-                                <img src="<?php echo UPLOAD_DIR . htmlspecialchars($memory['photo']); ?>" 
-                                     alt="<?php echo htmlspecialchars($memory['title']); ?>" 
-                                     class="memory-photo"
-                                     onerror="this.parentNode.innerHTML='<div class=\'photo-placeholder\'>📸 Imagem não encontrada</div>'">
+                            <?php if (!empty($memory['photo']) || !empty($memory['video'])): ?>
+                                <div class="media-container">
+                                    <div class="media-grid">
+                                        <?php if (!empty($memory['photo'])): ?>
+                                            <div>
+                                                <div class="media-type-badge">📸 Foto</div>
+                                                <img src="<?php echo UPLOAD_DIR . htmlspecialchars($memory['photo']); ?>" 
+                                                     alt="<?php echo htmlspecialchars($memory['title']); ?>" 
+                                                     class="memory-photo"
+                                                     onclick="openImageModal(this.src)"
+                                                     onerror="this.parentNode.innerHTML='<div class=\'media-placeholder\'>📸 Imagem não encontrada</div>'">
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!empty($memory['video'])): ?>
+                                            <div>
+                                                <div class="media-type-badge">🎥 Vídeo</div>
+                                                <video controls class="memory-video" preload="metadata">
+                                                    <source src="<?php echo UPLOAD_DIR . htmlspecialchars($memory['video']); ?>" type="video/mp4">
+                                                    <source src="<?php echo UPLOAD_DIR . htmlspecialchars($memory['video']); ?>" type="video/webm">
+                                                    <source src="<?php echo UPLOAD_DIR . htmlspecialchars($memory['video']); ?>" type="video/ogg">
+                                                    Seu navegador não suporta o elemento de vídeo.
+                                                </video>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -541,6 +655,12 @@ $flashMessage = getFlashMessage();
         </div>
     </div>
 
+    <!-- Modal para visualizar imagens -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close">&times;</span>
+        <img class="image-modal-content" id="modalImage">
+    </div>
+
     <script>
         // Ocultar mensagem flash após 5 segundos
         const flashMessage = document.getElementById('flashMessage');
@@ -552,6 +672,25 @@ $flashMessage = getFlashMessage();
                 }, 500);
             }, 5000);
         }
+
+        // Modal de imagens
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = src;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
 
         // Animação de bênçãos
         function startBlessingAnimation() {
@@ -590,6 +729,20 @@ $flashMessage = getFlashMessage();
             });
         }
 
+        // Pausar todos os vídeos quando um começar a tocar
+        function setupVideoControls() {
+            const videos = document.querySelectorAll('.memory-video');
+            videos.forEach(video => {
+                video.addEventListener('play', function() {
+                    videos.forEach(otherVideo => {
+                        if (otherVideo !== video) {
+                            otherVideo.pause();
+                        }
+                    });
+                });
+            });
+        }
+
         // Adicionar animação de slideOut ao CSS
         const style = document.createElement('style');
         style.textContent = `
@@ -610,6 +763,7 @@ $flashMessage = getFlashMessage();
         window.addEventListener('load', () => {
             startBlessingAnimation();
             animateMemories();
+            setupVideoControls();
         });
     </script>
 </body>

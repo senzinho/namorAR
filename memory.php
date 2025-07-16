@@ -1,82 +1,160 @@
 <?php
-// Memory.php - Versão final corrigida
+require_once 'config.php';
 
 class Memory {
-    private $pdo;
+    private $db;
     
     public function __construct() {
-        $this->pdo = getConnection();
+        $this->db = getConnection();
     }
     
-    // Criar nova memória
+    /**
+     * Criar nova memória
+     */
     public function create($data) {
         try {
-            $sql = "INSERT INTO memories (date, title, description, verse, verse_reference, photo) 
-                    VALUES (:date, :title, :description, :verse, :verse_reference, :photo)";
+            $sql = "INSERT INTO memories (date, title, description, verse, verse_reference, photo, video, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
             
-            $stmt = $this->pdo->prepare($sql);
-            
+            $stmt = $this->db->prepare($sql);
             $result = $stmt->execute([
-                ':date' => $data['date'] ?? '',
-                ':title' => $data['title'] ?? '',
-                ':description' => $data['description'] ?? '',
-                ':verse' => $data['verse'] ?? null,
-                ':verse_reference' => $data['verse_reference'] ?? null,
-                ':photo' => $data['photo'] ?? null
+                $data['date'],
+                $data['title'],
+                $data['description'],
+                $data['verse'] ?? null,
+                $data['verse_reference'] ?? null,
+                $data['photo'] ?? null,
+                $data['video'] ?? null
             ]);
             
             if ($result) {
-                $id = $this->pdo->lastInsertId();
-                
                 return [
                     'success' => true,
-                    'id' => $id,
-                    'message' => 'Memória criada com sucesso!'
+                    'message' => 'Memória criada com sucesso!',
+                    'id' => $this->db->lastInsertId()
                 ];
             }
             
             return ['success' => false, 'message' => 'Erro ao criar memória'];
             
         } catch (PDOException $e) {
-            error_log("Erro SQL: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Erro no banco de dados: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
         }
     }
     
-    // Obter todas as memórias - CORRIGIDO
-    public function getAll() {
+    /**
+     * Atualizar memória existente
+     */
+    public function update($id, $data) {
         try {
-            $sql = "SELECT * FROM memories ORDER BY created_at ASC";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
+            // Verificar se a memória existe
+            $existingMemory = $this->getById($id);
+            if (!$existingMemory['success']) {
+                return ['success' => false, 'message' => 'Memória não encontrada'];
+            }
             
-            $memories = $stmt->fetchAll();
+            // Preparar campos para atualização
+            $fields = [];
+            $values = [];
             
-            return [
-                'success' => true,
-                'data' => $memories,
-                'count' => count($memories) // ADICIONADO
-            ];
+            if (isset($data['date'])) {
+                $fields[] = 'date = ?';
+                $values[] = $data['date'];
+            }
+            
+            if (isset($data['title'])) {
+                $fields[] = 'title = ?';
+                $values[] = $data['title'];
+            }
+            
+            if (isset($data['description'])) {
+                $fields[] = 'description = ?';
+                $values[] = $data['description'];
+            }
+            
+            if (isset($data['verse'])) {
+                $fields[] = 'verse = ?';
+                $values[] = $data['verse'];
+            }
+            
+            if (isset($data['verse_reference'])) {
+                $fields[] = 'verse_reference = ?';
+                $values[] = $data['verse_reference'];
+            }
+            
+            if (isset($data['photo'])) {
+                $fields[] = 'photo = ?';
+                $values[] = $data['photo'];
+            }
+            
+            if (isset($data['video'])) {
+                $fields[] = 'video = ?';
+                $values[] = $data['video'];
+            }
+            
+            $fields[] = 'updated_at = NOW()';
+            $values[] = $id;
+            
+            $sql = "UPDATE memories SET " . implode(', ', $fields) . " WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute($values);
+            
+            if ($result) {
+                return ['success' => true, 'message' => 'Memória atualizada com sucesso!'];
+            }
+            
+            return ['success' => false, 'message' => 'Erro ao atualizar memória'];
             
         } catch (PDOException $e) {
-            error_log("Erro ao buscar memórias: " . $e->getMessage());
-            return [
-                'success' => false, 
-                'message' => 'Erro ao buscar memórias: ' . $e->getMessage(),
-                'data' => [],
-                'count' => 0 // ADICIONADO
-            ];
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
         }
     }
     
-    // Obter memória por ID
+    /**
+     * Deletar memória
+     */
+    public function delete($id) {
+        try {
+            // Obter dados da memória antes de deletar para remover arquivos
+            $memory = $this->getById($id);
+            if ($memory['success']) {
+                $memoryData = $memory['data'];
+                
+                // Deletar arquivos associados
+                if (!empty($memoryData['photo'])) {
+                    deleteImage($memoryData['photo']);
+                }
+                
+                if (!empty($memoryData['video'])) {
+                    deleteVideo($memoryData['video']);
+                }
+            }
+            
+            $sql = "DELETE FROM memories WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute([$id]);
+            
+            if ($result) {
+                return ['success' => true, 'message' => 'Memória deletada com sucesso!'];
+            }
+            
+            return ['success' => false, 'message' => 'Erro ao deletar memória'];
+            
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Obter memória por ID
+     */
     public function getById($id) {
         try {
-            $sql = "SELECT * FROM memories WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([':id' => $id]);
+            $sql = "SELECT * FROM memories WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
             
-            $memory = $stmt->fetch();
+            $memory = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($memory) {
                 return ['success' => true, 'data' => $memory];
@@ -85,233 +163,328 @@ class Memory {
             return ['success' => false, 'message' => 'Memória não encontrada'];
             
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Erro ao buscar memória: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
         }
     }
     
-    // Atualizar memória
-    public function update($id, $data) {
+    /**
+     * Obter todas as memórias
+     */
+    public function getAll($orderBy = 'created_at', $orderDirection = 'DESC') {
         try {
-            $fields = [];
-            $params = [':id' => $id];
+            $allowedColumns = ['id', 'date', 'title', 'created_at', 'updated_at'];
+            $allowedDirections = ['ASC', 'DESC'];
             
-            if (isset($data['date'])) {
-                $fields[] = "date = :date";
-                $params[':date'] = $data['date'];
+            if (!in_array($orderBy, $allowedColumns)) {
+                $orderBy = 'created_at';
             }
             
-            if (isset($data['title'])) {
-                $fields[] = "title = :title";
-                $params[':title'] = $data['title'];
+            if (!in_array($orderDirection, $allowedDirections)) {
+                $orderDirection = 'DESC';
             }
             
-            if (isset($data['description'])) {
-                $fields[] = "description = :description";
-                $params[':description'] = $data['description'];
-            }
+            $sql = "SELECT * FROM memories ORDER BY {$orderBy} {$orderDirection}";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
             
-            if (isset($data['verse'])) {
-                $fields[] = "verse = :verse";
-                $params[':verse'] = $data['verse'];
-            }
+            $memories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            if (isset($data['verse_reference'])) {
-                $fields[] = "verse_reference = :verse_reference";
-                $params[':verse_reference'] = $data['verse_reference'];
-            }
-            
-            if (isset($data['photo'])) {
-                $fields[] = "photo = :photo";
-                $params[':photo'] = $data['photo'];
-            }
-            
-            if (empty($fields)) {
-                return ['success' => false, 'message' => 'Nenhum campo para atualizar'];
-            }
-            
-            $sql = "UPDATE memories SET " . implode(', ', $fields) . ", updated_at = CURRENT_TIMESTAMP WHERE id = :id";
-            
-            $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute($params);
-            
-            if ($result && $stmt->rowCount() > 0) {
-                return ['success' => true, 'message' => 'Memória atualizada com sucesso!'];
-            }
-            
-            return ['success' => false, 'message' => 'Nenhuma alteração realizada'];
+            return ['success' => true, 'data' => $memories];
             
         } catch (PDOException $e) {
-            error_log("Erro ao atualizar: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Erro ao atualizar memória: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
         }
     }
     
-    // Deletar memória
-    public function delete($id) {
+    /**
+     * Buscar memórias por termo
+     */
+    public function search($term) {
         try {
-            $memoryResult = $this->getById($id);
+            $sql = "SELECT * FROM memories 
+                    WHERE title LIKE ? 
+                    OR description LIKE ? 
+                    OR verse LIKE ? 
+                    OR date LIKE ?
+                    ORDER BY created_at DESC";
             
-            if (!$memoryResult['success']) {
-                return $memoryResult;
-            }
+            $searchTerm = "%{$term}%";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
             
-            $memory = $memoryResult['data'];
+            $memories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql = "DELETE FROM memories WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute([':id' => $id]);
-            
-            if ($result && $stmt->rowCount() > 0) {
-                if ($memory['photo']) {
-                    deleteImage($memory['photo']);
-                }
-                
-                return ['success' => true, 'message' => 'Memória deletada com sucesso!'];
-            }
-            
-            return ['success' => false, 'message' => 'Memória não encontrada'];
+            return ['success' => true, 'data' => $memories];
             
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Erro ao deletar memória: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
         }
     }
     
-    // Validar dados
+    /**
+     * Obter memórias por período
+     */
+    public function getByDateRange($startDate, $endDate) {
+        try {
+            $sql = "SELECT * FROM memories 
+                    WHERE STR_TO_DATE(date, '%d de %M de %Y') BETWEEN ? AND ?
+                    ORDER BY STR_TO_DATE(date, '%d de %M de %Y') DESC";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$startDate, $endDate]);
+            
+            $memories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return ['success' => true, 'data' => $memories];
+            
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Contar total de memórias
+     */
+    public function getCount() {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM memories";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return ['success' => true, 'data' => $result['total']];
+            
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Obter estatísticas
+     */
+    public function getStatistics() {
+        try {
+            $stats = [];
+            
+            // Total de memórias
+            $countResult = $this->getCount();
+            $stats['total_memories'] = $countResult['success'] ? $countResult['data'] : 0;
+            
+            // Memórias com fotos
+            $sql = "SELECT COUNT(*) as total FROM memories WHERE photo IS NOT NULL AND photo != ''";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['memories_with_photos'] = $result['total'];
+            
+            // Memórias com vídeos
+            $sql = "SELECT COUNT(*) as total FROM memories WHERE video IS NOT NULL AND video != ''";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['memories_with_videos'] = $result['total'];
+            
+            // Memórias com versículos
+            $sql = "SELECT COUNT(*) as total FROM memories WHERE verse IS NOT NULL AND verse != ''";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['memories_with_verses'] = $result['total'];
+            
+            // Primeira memória
+            $sql = "SELECT date FROM memories ORDER BY created_at ASC LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['first_memory_date'] = $result ? $result['date'] : null;
+            
+            // Última memória
+            $sql = "SELECT date FROM memories ORDER BY created_at DESC LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stats['last_memory_date'] = $result ? $result['date'] : null;
+            
+            return ['success' => true, 'data' => $stats];
+            
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Erro no banco: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Validar dados da memória
+     */
     public function validateData($data) {
         $errors = [];
         
+        // Validar data
         if (empty($data['date'])) {
-            $errors['date'] = 'Data é obrigatória';
-        } elseif (strlen($data['date']) > 100) {
-            $errors['date'] = 'Data muito longa (máximo 100 caracteres)';
+            $errors[] = 'Data é obrigatória';
         }
         
+        // Validar título
         if (empty($data['title'])) {
-            $errors['title'] = 'Título é obrigatório';
+            $errors[] = 'Título é obrigatório';
         } elseif (strlen($data['title']) > 255) {
-            $errors['title'] = 'Título muito longo (máximo 255 caracteres)';
+            $errors[] = 'Título muito longo (máx 255 caracteres)';
         }
         
+        // Validar descrição
         if (empty($data['description'])) {
-            $errors['description'] = 'Descrição é obrigatória';
-        } elseif (strlen($data['description']) > 10000) {
-            $errors['description'] = 'Descrição muito longa (máximo 10000 caracteres)';
+            $errors[] = 'Descrição é obrigatória';
+        } elseif (strlen($data['description']) > 2000) {
+            $errors[] = 'Descrição muito longa (máx 2000 caracteres)';
         }
         
-        if (isset($data['verse']) && strlen($data['verse']) > 10000) {
-            $errors['verse'] = 'Versículo muito longo (máximo 10000 caracteres)';
+        // Validar versículo (opcional)
+        if (!empty($data['verse']) && strlen($data['verse']) > 1000) {
+            $errors[] = 'Versículo muito longo (máx 1000 caracteres)';
         }
         
-        if (isset($data['verse_reference']) && strlen($data['verse_reference']) > 100) {
-            $errors['verse_reference'] = 'Referência muito longa (máximo 100 caracteres)';
+        // Validar referência do versículo (opcional)
+        if (!empty($data['verse_reference']) && strlen($data['verse_reference']) > 100) {
+            $errors[] = 'Referência do versículo muito longa (máx 100 caracteres)';
         }
         
         return $errors;
     }
     
-    // Contar memórias
-    public function count() {
-        try {
-            $sql = "SELECT COUNT(*) as total FROM memories";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-            
-            $result = $stmt->fetch();
-            
-            return [
-                'success' => true,
-                'total' => $result['total']
-            ];
-            
-        } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Erro ao contar memórias: ' . $e->getMessage()];
-        }
-    }
-    
-    // Buscar memórias
-    public function search($term) {
-        try {
-            $sql = "SELECT * FROM memories 
-                    WHERE title LIKE :term 
-                    OR description LIKE :term 
-                    OR verse LIKE :term 
-                    OR date LIKE :term 
-                    ORDER BY created_at ASC";
-            
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([':term' => "%{$term}%"]);
-            
-            return [
-                'success' => true,
-                'data' => $stmt->fetchAll()
-            ];
-            
-        } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Erro na busca: ' . $e->getMessage()];
-        }
-    }
-    
-    // Exportar para JSON
+    /**
+     * Exportar memórias para JSON
+     */
     public function exportToJson() {
-        $result = $this->getAll();
-        
-        if ($result['success']) {
-            $export = [
-                'memories' => $result['data'],
-                'exported_at' => date('Y-m-d H:i:s'),
-                'total' => count($result['data'])
+        try {
+            $result = $this->getAll();
+            
+            if (!$result['success']) {
+                return $result;
+            }
+            
+            $exportData = [
+                'export_date' => date('Y-m-d H:i:s'),
+                'total_memories' => count($result['data']),
+                'memories' => $result['data']
             ];
             
-            return [
-                'success' => true,
-                'data' => json_encode($export, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-            ];
+            $json = json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            
+            if ($json === false) {
+                return ['success' => false, 'message' => 'Erro ao gerar JSON'];
+            }
+            
+            return ['success' => true, 'data' => $json];
+            
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Erro na exportação: ' . $e->getMessage()];
         }
-        
-        return $result;
     }
     
-    // Importar de JSON
-    public function importFromJson($jsonData) {
+    /**
+     * Importar memórias do JSON
+     */
+    public function importFromJson($jsonContent) {
         try {
-            $data = json_decode($jsonData, true);
+            $data = json_decode($jsonContent, true);
             
-            if (json_last_error() !== JSON_ERROR_NONE) {
+            if ($data === null) {
                 return ['success' => false, 'message' => 'JSON inválido'];
             }
             
             if (!isset($data['memories']) || !is_array($data['memories'])) {
-                return ['success' => false, 'message' => 'Formato de dados inválido'];
+                return ['success' => false, 'message' => 'Formato de JSON inválido'];
             }
             
             $imported = 0;
-            $errors = [];
+            $errors = 0;
             
-            foreach ($data['memories'] as $memory) {
-                $validationErrors = $this->validateData($memory);
+            foreach ($data['memories'] as $memoryData) {
+                // Remover campos de sistema
+                unset($memoryData['id']);
+                unset($memoryData['created_at']);
+                unset($memoryData['updated_at']);
+                
+                // Validar dados
+                $validationErrors = $this->validateData($memoryData);
                 if (!empty($validationErrors)) {
-                    $errors[] = "Memória '{$memory['title']}': " . implode(', ', $validationErrors);
+                    $errors++;
                     continue;
                 }
                 
-                $result = $this->create($memory);
+                // Criar memória
+                $result = $this->create($memoryData);
                 if ($result['success']) {
                     $imported++;
                 } else {
-                    $errors[] = "Erro ao importar '{$memory['title']}': " . $result['message'];
+                    $errors++;
                 }
             }
             
-            $message = "Importadas {$imported} memórias com sucesso!";
-            if (!empty($errors)) {
-                $message .= " Erros: " . implode('; ', $errors);
+            $message = "Importação concluída: {$imported} memórias importadas";
+            if ($errors > 0) {
+                $message .= ", {$errors} erros";
             }
             
-            return ['success' => true, 'message' => $message, 'imported' => $imported];
+            return ['success' => true, 'message' => $message];
             
         } catch (Exception $e) {
             return ['success' => false, 'message' => 'Erro na importação: ' . $e->getMessage()];
         }
     }
+    
+    /**
+     * Criar backup das memórias
+     */
+    public function createBackup() {
+        try {
+            $exportResult = $this->exportToJson();
+            
+            if (!$exportResult['success']) {
+                return $exportResult;
+            }
+            
+            $backupDir = 'backups/';
+            if (!file_exists($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+            
+            $filename = 'backup_memories_' . date('Y-m-d_H-i-s') . '.json';
+            $filepath = $backupDir . $filename;
+            
+            if (file_put_contents($filepath, $exportResult['data'])) {
+                return [
+                    'success' => true, 
+                    'message' => 'Backup criado com sucesso!',
+                    'filename' => $filename
+                ];
+            }
+            
+            return ['success' => false, 'message' => 'Erro ao salvar backup'];
+            
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Erro ao criar backup: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Limpar memórias antigas (opcional)
+     */
+    public function cleanOldMemories($days = 365) {
+        try {
+            $sql = "DELETE FROM memories WHERE created_at < DATE_SUB(NOW(), INTERVAL ? DAY)";
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute([$days]);
+            
+            $deletedCount = $stmt->rowCount();
+            
+            return [
+                'success' => true, 
+                'message' => "Limpeza concluída: {$deletedCount} memórias antigas removidas"
+            ];
+            
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Erro na limpeza: ' . $e->getMessage()];
+        }
+    }
 }
-?>

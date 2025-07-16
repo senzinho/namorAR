@@ -114,6 +114,38 @@ function validateImageUpload($file) {
     
     return ['success' => true, 'message' => 'Arquivo válido'];
 }
+// Função para fazer upload de video
+
+function uploadVideo($file) {
+    $allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/quicktime'];
+    $maxSize = 50 * 1024 * 1024; // 50MB
+    
+    if (!in_array($file['type'], $allowedTypes)) {
+        return ['success' => false, 'message' => 'Tipo de arquivo não permitido'];
+    }
+    
+    if ($file['size'] > $maxSize) {
+        return ['success' => false, 'message' => 'Arquivo muito grande (máx 50MB)'];
+    }
+    
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $extension;
+    $destination = UPLOAD_DIR . $filename;
+    
+    if (move_uploaded_file($file['tmp_name'], $destination)) {
+        return ['success' => true, 'filename' => $filename];
+    }
+    
+    return ['success' => false, 'message' => 'Erro ao mover arquivo'];
+ }
+ 
+ function deleteVideo($filename) {
+    $filepath = UPLOAD_DIR . $filename;
+    if (file_exists($filepath)) {
+        return unlink($filepath);
+    }
+    return false;
+ }
 
 // Função para fazer upload de imagem
 function uploadImage($file) {

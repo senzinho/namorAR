@@ -1,0 +1,36 @@
+{
+    "memories": [
+      {
+        "date": "10 de Junho de 2024",
+        "title": "Nosso Primeiro Encontro 💕",
+        "description": "O dia em que Deus nos apresentou foi verdadeiramente especial. Desde o primeiro momento, senti que havia algo diferente, algo abençoado neste encontro. Conversamos por horas e o tempo pareceu voar.",
+        "verse": "Aquele que encontra uma esposa encontra algo excelente; recebeu uma bênção do Senhor.",
+        "verseReference": "Provérbios 18:22",
+        "photo": "primeiro_encontro.jpg"
+      },
+      {
+        "date": "15 de Junho de 2024",
+        "title": "Primeiro Beijo Abençoado 💋",
+        "description": "Um momento puro e sagrado onde sentimos o amor de Deus através do nosso amor. Foi delicado, respeitoso e cheio de significado. Nossos corações se uniram de uma forma especial.",
+        "verse": "Ponha-me como selo sobre o seu coração; como selo sobre o seu braço; pois o amor é tão forte quanto a morte.",
+        "verseReference": "Cânticos 8:6",
+        "photo": "primeiro_beijo.jpg"
+      },
+      {
+        "date": "20 de Junho de 2024",
+        "title": "Primeira Missa Juntos ⛪",
+        "description": "Assistir à missa juntos foi uma experiência transformadora. Orar lado a lado, comungar juntos e sentir a presença de Deus em nossa união. Foi quando percebi que nosso amor é verdadeiramente abençoado.",
+        "verse": "Onde dois ou três estiverem reunidos em meu nome, ali eu estou no meio deles.",
+        "verseReference": "Mateus 18:20",
+        "photo": "primeira_missa.jpg"
+      },
+      {
+        "date": "16 de Julho de 2024",
+        "title": "Nosso Primeiro Mês de Amor 🎉",
+        "description": "Um mês completo de bênçãos, crescimento espiritual e descobertas. Cada dia ao seu lado é uma nova oportunidade de experimentar o amor de Deus. Que venham muitos meses mais, sempre com Deus no centro de tudo!",
+        "verse": "E tudo o que fizerem, seja em palavra ou em ação, façam-no em nome do Senhor Jesus, dando por ele graças a Deus Pai.",
+        "verseReference": "Colossenses 3:17",
+        "photo": "primeiro_mes.jpg"
+      }
+    ]
+  }

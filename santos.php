@@ -130,6 +130,102 @@ $santos = [
         'cor' => '#7c2d12',
         'emoji' => '✝️',
         'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjN2MyZDEyIiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+4p2e8J+PuzwvdGV4dD4KPC9zdmc+Cg=='
+    ],
+    'padre_pio' => [
+        'nome' => 'Padre Pio de Pietrelcina',
+        'festa' => '23 de Setembro',
+        'padroeira' => 'Santo dos Estigmas e da Oração',
+        'frases' => [
+            'Reze, tenha esperança e não se preocupe.',
+            'A oração é a melhor arma que temos.',
+            'Permaneça perto de Jesus; Ele nunca o abandonará.',
+            'Quanto mais você se aproxima de Jesus, mais paz encontrará.',
+            'O amor de Deus é infinito e sempre nos perdoa.'
+        ],
+        'oracao' => 'Padre Pio, intercedei por nosso amor e que possamos sempre confiar na misericórdia divina.',
+        'cor' => '#8b5a2b',
+        'emoji' => '🛐',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjOGI1YTJiIiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+QkDwvdGV4dD4KPC9zdmc+Cg=='
+    ],
+    'sao_carlos_acutis' => [
+        'nome' => 'São Carlos Acutis',
+        'festa' => '12 de Outubro',
+        'padroeira' => 'Padroeiro da Internet e dos Jovens',
+        'frases' => [
+            'A Eucaristia é minha autoestrada para o céu.',
+            'Todos nascem originais, mas muitos morrem como fotocópias.',
+            'Quanto mais Eucaristia recebermos, mais nos tornaremos como Jesus.',
+            'A tristeza é olhar para si mesmo; a felicidade é olhar para Deus.',
+            'Nossa meta deve ser o infinito, não o finito.'
+        ],
+        'oracao' => 'São Carlos Acutis, ensinai-nos a viver com autenticidade e a usar a tecnologia para o bem.',
+        'cor' => '#3b82f6',
+        'emoji' => '💻',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjM2I4MmY2IiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SuzwvdGV4dD4KPC9zdmc+Cg=='
+    ],
+    'santa_catarina_siena' => [
+        'nome' => 'Santa Catarina de Siena',
+        'festa' => '29 de Abril',
+        'padroeira' => 'Doutora da Igreja e Padroeira da Europa',
+        'frases' => [
+            'Seja quem Deus quer que você seja e incendiará o mundo.',
+            'O amor transforma em si mesmo tudo o que ama.',
+            'Nada grande foi feito sem muita dificuldade.',
+            'Se você for o que deve ser, incendiará o mundo inteiro.',
+            'O amor vence tudo, e nós devemos nos entregar ao amor.'
+        ],
+        'oracao' => 'Santa Catarina, ensinai-nos a ser corajosos no amor e a seguir a vontade de Deus.',
+        'cor' => '#dc2626',
+        'emoji' => '🔥',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjZGMyNjI2IiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+UpTwvdGV4dD4KPC9zdmc+Cg=='
+    ],
+    'sao_josemaria_escriva' => [
+        'nome' => 'São Josemaría Escrivá',
+        'festa' => '26 de Junho',
+        'padroeira' => 'Fundador do Opus Dei',
+        'frases' => [
+            'Busque a santidade no trabalho ordinário de cada dia.',
+            'O amor se prova com obras, não com belos sentimentos.',
+            'Deus não nos pede o êxito, mas a fidelidade.',
+            'Não há santidade sem sacrifício.',
+            'Busque a Deus no trabalho e encontrará Deus no amor.'
+        ],
+        'oracao' => 'São Josemaría, ensinai-nos a buscar a santidade em nosso amor cotidiano.',
+        'cor' => '#059669',
+        'emoji' => '⚒️',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDU5NjY5IiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+4pqi77iPPC90ZXh0Pgo8L3N2Zz4K'
+    ],
+    'sao_joao_vianney' => [
+        'nome' => 'São João Maria Vianney',
+        'festa' => '4 de Agosto',
+        'padroeira' => 'Cura d\'Ars - Padroeiro dos Párocos',
+        'frases' => [
+            'O coração do homem é como uma pedra lançada num lago.',
+            'A oração é para a alma o que a chuva é para a terra.',
+            'Nosso Senhor ama-nos tanto que morreu por nós na cruz.',
+            'Quando rezamos bem, todos os nossos atos se tornam oração.',
+            'Meu Deus, eu Vos amo! Fazei que eu Vos ame cada vez mais!'
+        ],
+        'oracao' => 'São João Vianney, ensinai-nos a orar com o coração e a amar com pureza.',
+        'cor' => '#7c3aed',
+        'emoji' => '⛪',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjN2MzYWVkIiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+4pun77iPPC90ZXh0Pgo8L3N2Zz4K'
+    ],
+    'santa_faustina' => [
+        'nome' => 'Santa Faustina Kowalska',
+        'festa' => '5 de Outubro',
+        'padroeira' => 'Apóstola da Divina Misericórdia',
+        'frases' => [
+            'Jesus, eu confio em Vós.',
+            'A misericórdia de Deus é inesgotável.',
+            'Onde há humildade, há também sabedoria.',
+            'O amor de Deus é o único que pode encher o coração humano.',
+            'Jesus me disse: Escreva que quanto mais alguém confia, mais recebe.'
+        ],
+        'oracao' => 'Santa Faustina, ensinai-nos a confiar na misericórdia divina e a amar com compaixão.',
+        'cor' => '#06b6d4',
+        'emoji' => '💙',
+        'imagem' => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDZiNmQ0IiByeD0iNTAiLz4KPHR0ZXh0IHg9IjUwIiB5PSI2MCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SrzwvdGV4dD4KPC9zdmc+Cg=='
     ]
 ];
 
@@ -644,6 +740,12 @@ $flashMessage = getFlashMessage();
             .santo-card:nth-child(6) { animation-delay: 0.6s; }
             .santo-card:nth-child(7) { animation-delay: 0.7s; }
             .santo-card:nth-child(8) { animation-delay: 0.8s; }
+            .santo-card:nth-child(9) { animation-delay: 0.9s; }
+            .santo-card:nth-child(10) { animation-delay: 1.0s; }
+            .santo-card:nth-child(11) { animation-delay: 1.1s; }
+            .santo-card:nth-child(12) { animation-delay: 1.2s; }
+            .santo-card:nth-child(13) { animation-delay: 1.3s; }
+            .santo-card:nth-child(14) { animation-delay: 1.4s; }
         `;
         document.head.appendChild(style);
 

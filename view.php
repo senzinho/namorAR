@@ -1,4 +1,3 @@
-
 <?php
 require_once 'config.php';
 require_once 'Memory.php';
@@ -32,7 +31,7 @@ $flashMessage = getFlashMessage();
 
         body {
             font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #4a69bd 0%, #1e3c72 100%);
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 50%, #ffa0b4 100%);
             min-height: 100vh;
             color: #333;
             overflow-x: hidden;
@@ -55,25 +54,27 @@ $flashMessage = getFlashMessage();
 
         .nav-btn {
             padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             border: none;
             border-radius: 25px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            color: #333;
+            color: #8b4f6b;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.3);
         }
 
         .nav-btn:hover {
             background: white;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(255, 182, 193, 0.4);
         }
 
         .nav-btn.active {
-            background: linear-gradient(45deg, #ffd700, #ff6b35);
+            background: linear-gradient(45deg, #ff69b4, #ffb6c1);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
         }
 
         .flash-message {
@@ -90,15 +91,15 @@ $flashMessage = getFlashMessage();
         }
 
         .flash-success {
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            background: linear-gradient(45deg, #ff69b4, #ffb6c1);
         }
 
         .flash-error {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            background: linear-gradient(45deg, #dc3545, #c82333);
         }
 
         .flash-warning {
-            background: linear-gradient(45deg, #f39c12, #e67e22);
+            background: linear-gradient(45deg, #ffc107, #e0a800);
         }
 
         @keyframes slideIn {
@@ -117,24 +118,24 @@ $flashMessage = getFlashMessage();
             margin-bottom: 40px;
             margin-top: 60px;
             padding: 50px 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 182, 193, 0.2);
         }
 
         .header h1 {
             font-size: 3em;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #8b4f6b;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
             margin-bottom: 15px;
             animation: fadeInUp 1s ease-out;
         }
 
         .header .subtitle {
             font-size: 1.3em;
-            color: rgba(255, 255, 255, 0.9);
+            color: #8b4f6b;
             font-style: italic;
             margin-bottom: 20px;
             animation: fadeInUp 1s ease-out 0.3s both;
@@ -142,18 +143,18 @@ $flashMessage = getFlashMessage();
 
         .bible-verse {
             font-size: 1.1em;
-            color: rgba(255, 255, 255, 0.95);
+            color: #8b4f6b;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 15px;
-            border-left: 4px solid #ffd700;
+            border-left: 4px solid #ff69b4;
             margin: 20px 0;
             animation: fadeInUp 1s ease-out 0.6s both;
         }
 
         .bible-verse .reference {
             font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.8);
+            color: #8b4f6b;
             margin-top: 10px;
             text-align: right;
             font-style: italic;
@@ -168,19 +169,20 @@ $flashMessage = getFlashMessage();
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
-            color: white;
+            color: #8b4f6b;
             backdrop-filter: blur(10px);
             min-width: 120px;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
         }
 
         .stat-number {
             font-size: 2em;
             font-weight: bold;
-            color: #ffd700;
+            color: #ff69b4;
         }
 
         .stat-label {
@@ -200,7 +202,7 @@ $flashMessage = getFlashMessage();
             top: 0;
             bottom: 0;
             width: 4px;
-            background: linear-gradient(to bottom, #ffd700, #ff6b35, #ffd700);
+            background: linear-gradient(to bottom, #ff69b4, #ffb6c1, #ff69b4);
             transform: translateX(-50%);
             border-radius: 2px;
         }
@@ -223,16 +225,16 @@ $flashMessage = getFlashMessage();
             background: rgba(255, 255, 255, 0.98);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
             position: relative;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .memory-content:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.4);
         }
 
         .memory-content::before {
@@ -258,42 +260,42 @@ $flashMessage = getFlashMessage();
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(45deg, #ffd700, #ff6b35);
+            background: linear-gradient(45deg, #ff69b4, #ffb6c1);
             color: white;
             padding: 12px 24px;
             border-radius: 25px;
             font-weight: bold;
             font-size: 0.9em;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
             z-index: 10;
         }
 
         .memory-title {
             font-size: 1.5em;
-            color: #2c3e50;
+            color: #8b4f6b;
             margin-bottom: 15px;
             font-weight: bold;
         }
 
         .memory-description {
-            color: #555;
+            color: #666;
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
         .memory-verse {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
             padding: 15px;
             border-radius: 10px;
-            border-left: 4px solid #ffd700;
+            border-left: 4px solid #ff69b4;
             font-style: italic;
-            color: #444;
+            color: #8b4f6b;
             margin: 15px 0;
         }
 
         .memory-verse .verse-reference {
             font-size: 0.85em;
-            color: #666;
+            color: #8b4f6b;
             margin-top: 8px;
             text-align: right;
         }
@@ -314,7 +316,7 @@ $flashMessage = getFlashMessage();
             max-height: 300px;
             object-fit: cover;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
             cursor: pointer;
             transition: transform 0.3s ease;
         }
@@ -327,31 +329,31 @@ $flashMessage = getFlashMessage();
             width: 100%;
             max-height: 300px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
         }
 
         .memory-video:focus {
-            outline: 2px solid #ffd700;
+            outline: 2px solid #ff69b4;
             outline-offset: 2px;
         }
 
         .media-placeholder {
             width: 100%;
             height: 200px;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border: 2px dashed #dee2e6;
+            background: linear-gradient(45deg, #fce4ec, #f8bbd9);
+            border: 2px dashed #ffb6c1;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #6c757d;
+            color: #8b4f6b;
             font-style: italic;
             margin: 15px 0;
         }
 
         .media-type-badge {
             display: inline-block;
-            background: linear-gradient(45deg, #ffd700, #ff6b35);
+            background: linear-gradient(45deg, #ff69b4, #ffb6c1);
             color: white;
             padding: 4px 10px;
             border-radius: 12px;
@@ -362,9 +364,9 @@ $flashMessage = getFlashMessage();
 
         .empty-state {
             text-align: center;
-            color: white;
+            color: #8b4f6b;
             padding: 60px 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             backdrop-filter: blur(10px);
         }
@@ -372,7 +374,7 @@ $flashMessage = getFlashMessage();
         .empty-state h3 {
             font-size: 2em;
             margin-bottom: 20px;
-            color: #ffd700;
+            color: #ff69b4;
         }
 
         .empty-state p {
@@ -383,37 +385,39 @@ $flashMessage = getFlashMessage();
         .empty-state .btn {
             display: inline-block;
             padding: 15px 30px;
-            background: linear-gradient(45deg, #ffd700, #ff6b35);
+            background: linear-gradient(45deg, #ff69b4, #ffb6c1);
             color: white;
             text-decoration: none;
             border-radius: 25px;
             font-weight: bold;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
         }
 
         .empty-state .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
         }
 
         .prayer-section {
             text-align: center;
             margin: 60px 0;
             padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(255, 182, 193, 0.2);
         }
 
         .prayer-section h3 {
-            color: white;
+            color: #8b4f6b;
             font-size: 1.8em;
             margin-bottom: 20px;
         }
 
         .prayer-section p {
             font-size: 1.2em;
-            color: rgba(255, 255, 255, 0.9);
+            color: #8b4f6b;
             font-style: italic;
             line-height: 1.6;
             margin-bottom: 15px;
@@ -421,7 +425,7 @@ $flashMessage = getFlashMessage();
 
         .prayer-section .amen {
             font-size: 1.1em;
-            color: #ffd700;
+            color: #ff69b4;
             font-weight: bold;
             margin-top: 20px;
         }
@@ -433,9 +437,127 @@ $flashMessage = getFlashMessage();
         }
 
         .blessing {
-            color: #ffd700;
+            color: #ff69b4;
             font-size: 24px;
             animation: float 4s ease-in-out infinite;
+        }
+
+        /* Animação de pétalas de rosas caindo */
+        .rose-petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 500;
+            font-size: 20px;
+            opacity: 0.8;
+            animation: fallAndSway 8s linear infinite;
+        }
+
+        .rose-petal-1 { color: #ff69b4; font-size: 18px; }
+        .rose-petal-2 { color: #ffb6c1; font-size: 22px; }
+        .rose-petal-3 { color: #ffc0cb; font-size: 16px; }
+        .rose-petal-4 { color: #ff1493; font-size: 24px; }
+        .rose-petal-5 { color: #da70d6; font-size: 20px; }
+
+        @keyframes fallAndSway {
+            0% {
+                transform: translateY(-100px) translateX(0px) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translateY(25vh) translateX(20px) rotate(90deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50vh) translateX(-15px) rotate(180deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(75vh) translateX(25px) rotate(270deg);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(100vh) translateX(-10px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Variações de animação para movimento mais natural */
+        .rose-petal.sway-1 {
+            animation: fallAndSway1 10s linear infinite;
+        }
+
+        .rose-petal.sway-2 {
+            animation: fallAndSway2 12s linear infinite;
+        }
+
+        .rose-petal.sway-3 {
+            animation: fallAndSway3 9s linear infinite;
+        }
+
+        @keyframes fallAndSway1 {
+            0% {
+                transform: translateY(-100px) translateX(0px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            20% {
+                transform: translateY(20vh) translateX(-30px) rotate(72deg) scale(0.9);
+            }
+            40% {
+                transform: translateY(40vh) translateX(35px) rotate(144deg) scale(1.1);
+            }
+            60% {
+                transform: translateY(60vh) translateX(-20px) rotate(216deg) scale(0.8);
+            }
+            80% {
+                transform: translateY(80vh) translateX(15px) rotate(288deg) scale(1.2);
+            }
+            100% {
+                transform: translateY(110vh) translateX(-5px) rotate(360deg) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallAndSway2 {
+            0% {
+                transform: translateY(-100px) translateX(0px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            15% {
+                transform: translateY(15vh) translateX(40px) rotate(54deg) scale(1.3);
+            }
+            35% {
+                transform: translateY(35vh) translateX(-25px) rotate(126deg) scale(0.7);
+            }
+            55% {
+                transform: translateY(55vh) translateX(30px) rotate(198deg) scale(1.1);
+            }
+            75% {
+                transform: translateY(75vh) translateX(-35px) rotate(270deg) scale(0.9);
+            }
+            100% {
+                transform: translateY(110vh) translateX(10px) rotate(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallAndSway3 {
+            0% {
+                transform: translateY(-100px) translateX(0px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            30% {
+                transform: translateY(30vh) translateX(-40px) rotate(108deg) scale(1.2);
+            }
+            50% {
+                transform: translateY(50vh) translateX(20px) rotate(180deg) scale(0.8);
+            }
+            70% {
+                transform: translateY(70vh) translateX(-15px) rotate(252deg) scale(1.4);
+            }
+            100% {
+                transform: translateY(110vh) translateX(25px) rotate(360deg) scale(0.4);
+                opacity: 0;
+            }
         }
 
         /* Modal para visualizar imagens */
@@ -447,7 +569,7 @@ $flashMessage = getFlashMessage();
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(255, 182, 193, 0.9);
             backdrop-filter: blur(5px);
         }
 
@@ -459,18 +581,19 @@ $flashMessage = getFlashMessage();
             max-width: 90%;
             max-height: 90%;
             border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
         }
 
         .image-modal-close {
             position: absolute;
             top: 20px;
             right: 30px;
-            color: white;
+            color: #8b4f6b;
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             z-index: 10000;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
         }
 
         .image-modal-close:hover {
@@ -715,6 +838,86 @@ $flashMessage = getFlashMessage();
             }, 3000);
         }
 
+        // Animação INSANA de pétalas de rosas caindo
+        function startRosePetalsRain() {
+            const petalEmojis = ['🌹', '🌸', '💐', '🌺', '🌻'];
+            const petalClasses = ['rose-petal-1', 'rose-petal-2', 'rose-petal-3', 'rose-petal-4', 'rose-petal-5'];
+            const swayClasses = ['', 'sway-1', 'sway-2', 'sway-3'];
+            
+            function createPetal() {
+                const petal = document.createElement('div');
+                const randomEmoji = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+                const randomClass = petalClasses[Math.floor(Math.random() * petalClasses.length)];
+                const randomSway = swayClasses[Math.floor(Math.random() * swayClasses.length)];
+                
+                petal.innerHTML = randomEmoji;
+                petal.className = `rose-petal ${randomClass} ${randomSway}`;
+                
+                // Posição aleatória horizontal
+                petal.style.left = Math.random() * (window.innerWidth + 100) + 'px';
+                petal.style.top = '-100px';
+                
+                // Variação na velocidade e delay
+                const animationDuration = 8 + Math.random() * 6; // 8-14 segundos
+                const animationDelay = Math.random() * 2; // 0-2 segundos de delay
+                
+                petal.style.animationDuration = animationDuration + 's';
+                petal.style.animationDelay = animationDelay + 's';
+                
+                document.body.appendChild(petal);
+                
+                // Remover a pétala após a animação
+                setTimeout(() => {
+                    if (document.body.contains(petal)) {
+                        document.body.removeChild(petal);
+                    }
+                }, (animationDuration + animationDelay) * 1000);
+            }
+            
+            // Criar pétalas constantemente
+            setInterval(createPetal, 300); // Nova pétala a cada 300ms
+            
+            // Rajada inicial mais intensa
+            for (let i = 0; i < 15; i++) {
+                setTimeout(createPetal, i * 100);
+            }
+            
+            // Rajadas periódicas mais intensas
+            setInterval(() => {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(createPetal, i * 50);
+                }
+            }, 5000); // Rajada a cada 5 segundos
+        }
+
+        // Função para criar uma chuva super intensa (modo especial)
+        function createRoseStorm() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    const petalEmojis = ['🌹', '🌸', '💐', '🌺', '🌻', '💖', '💕', '💗'];
+                    const randomEmoji = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+                    
+                    petal.innerHTML = randomEmoji;
+                    petal.className = 'rose-petal rose-petal-' + (Math.floor(Math.random() * 5) + 1);
+                    petal.style.left = Math.random() * window.innerWidth + 'px';
+                    petal.style.top = '-100px';
+                    petal.style.fontSize = (15 + Math.random() * 15) + 'px';
+                    
+                    document.body.appendChild(petal);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(petal)) {
+                            document.body.removeChild(petal);
+                        }
+                    }, 12000);
+                }, i * 100);
+            }
+        }
+
+        // Tempestade de rosas a cada 30 segundos
+        setInterval(createRoseStorm, 30000);
+
         // Animação de entrada das memórias
         function animateMemories() {
             const cards = document.querySelectorAll('.memory-card');
@@ -744,7 +947,7 @@ $flashMessage = getFlashMessage();
             });
         }
 
-        // Adicionar animação de slideOut ao CSS
+        // Adicionar animação de slideOut e pulse ao CSS
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideOut {
@@ -757,14 +960,59 @@ $flashMessage = getFlashMessage();
                     opacity: 0;
                 }
             }
+            
+            @keyframes pulse {
+                0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+                50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+                100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            }
         `;
         document.head.appendChild(style);
 
         // Inicializar quando a página carregar
         window.addEventListener('load', () => {
             startBlessingAnimation();
+            startRosePetalsRain(); // 🌹 CHUVA DE PÉTALAS ATIVADA! 🌹
             animateMemories();
             setupVideoControls();
+        });
+
+        // Easter egg: clique triplo para tempestade de rosas
+        let clickCount = 0;
+        document.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 3) {
+                createRoseStorm();
+                clickCount = 0;
+                
+                // Mostrar mensagem especial
+                const message = document.createElement('div');
+                message.innerHTML = '🌹✨ TEMPESTADE DE AMOR ATIVADA! ✨🌹';
+                message.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(45deg, #ff69b4, #ffb6c1);
+                    color: white;
+                    padding: 20px 40px;
+                    border-radius: 25px;
+                    font-size: 18px;
+                    font-weight: bold;
+                    z-index: 10000;
+                    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+                    animation: pulse 0.5s ease-in-out;
+                `;
+                document.body.appendChild(message);
+                
+                setTimeout(() => {
+                    if (document.body.contains(message)) {
+                        document.body.removeChild(message);
+                    }
+                }, 3000);
+            }
+            
+            setTimeout(() => { clickCount = 0; }, 1000);
         });
     </script>
 </body>
